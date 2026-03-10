@@ -132,13 +132,13 @@ export function LogViewer({ onCopyMessage, isExpanded, onToggleExpand, selectedH
               <div className="p-3 grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
                   <h4 className="text-xs font-semibold text-gray-500 mb-1">Message</h4>
-                  <pre className="text-xs font-mono text-gray-800 bg-white border border-gray-200 p-2 rounded max-h-40 overflow-y-auto whitespace-pre-wrap">
+                  <pre className="text-xs font-mono text-gray-800 bg-white border border-gray-200 p-2 rounded max-h-40 overflow-auto whitespace-pre">
                     {log.message.replace(/\r/g, '\n')}
                   </pre>
                 </div>
                 <div>
                   <h4 className="text-xs font-semibold text-gray-500 mb-1">{log.type === 'sent' ? 'Received ACK' : 'Auto-Sent ACK'}</h4>
-                  <pre className="text-xs font-mono text-gray-800 bg-white border border-gray-200 p-2 rounded max-h-40 overflow-y-auto whitespace-pre-wrap break-all">
+                  <pre className="text-xs font-mono text-gray-800 bg-white border border-gray-200 p-2 rounded max-h-40 overflow-auto whitespace-pre">
                     {log.ack ? log.ack.replace(/\r/g, '\n') : 'No ACK received'}
                   </pre>
                 </div>
