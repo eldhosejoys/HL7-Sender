@@ -59,3 +59,20 @@ You can run ESLint over the project using:
 ```bash
 npm run lint
 ```
+
+## Testing Locally (Usage)
+
+You can easily test the sender and receiver against each other on your local machine.
+
+1. **Start the applications**: Run `npm run dev` in your terminal.
+2. **Open the App**: Navigate to `http://localhost:5173` in your browser.
+3. **Start a Listener (Receiver)**: 
+   - On the "Receivers" side, add a new receiver and set the port to something like `5000`.
+   - Start the listener on port `5000`. The server is now waiting for MLLP/HL7 messages on `localhost:5000`.
+4. **Send a Message (Sender)**:
+   - On the "Targets" side, configure your target Host as `localhost` and Port as `5000`.
+   - Paste or type standard HL7 message into the message box.
+   - Click "Send".
+5. **Verify**:
+   - You should see the message pop up in the logs on the Receiver side.
+   - The Sender should display a successful ACK received from the Receiver.

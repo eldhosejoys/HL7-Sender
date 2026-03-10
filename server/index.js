@@ -30,8 +30,8 @@ const generateAck = (hl7Message) => {
   const msh = segments.find(s => s.startsWith('MSH'));
   if (!msh) return '';
 
-  const fields = msh.split('|');
-  const fieldSeparator = fields[0] || '|';
+  const fieldSeparator = msh.length > 3 ? msh.charAt(3) : '|';
+  const fields = msh.split(fieldSeparator);
   const encodingChars = fields[1] || '^~\\&';
   const sendingApp = fields[2] || '';
   const sendingFac = fields[3] || '';

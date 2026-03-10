@@ -57,13 +57,13 @@ export function LogViewer({ onCopyMessage }: LogViewerProps) {
                 <div>
                   <h4 className="text-xs font-semibold text-gray-500 mb-1">Message</h4>
                   <pre className="text-xs font-mono text-gray-800 bg-white border border-gray-200 p-2 rounded max-h-40 overflow-y-auto whitespace-pre-wrap">
-                    {log.message}
+                    {log.message.replace(/\r/g, '\n')}
                   </pre>
                 </div>
                 <div>
                   <h4 className="text-xs font-semibold text-gray-500 mb-1">{log.type === 'sent' ? 'Received ACK' : 'Auto-Sent ACK'}</h4>
                   <pre className="text-xs font-mono text-gray-800 bg-white border border-gray-200 p-2 rounded max-h-40 overflow-y-auto whitespace-pre-wrap">
-                    {log.ack || 'No ACK received'}
+                    {log.ack ? log.ack.replace(/\r/g, '\n') : 'No ACK received'}
                   </pre>
                 </div>
               </div>
