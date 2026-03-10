@@ -51,7 +51,19 @@ export function Sidebar({ selectedHost, selectedListener, onSelectHost, onSelect
   };
 
   const deleteHost = async (id?: number) => {
-    if (id) await db.hosts.delete(id);
+    if (id) {
+      if (confirm('Are you sure you want to delete this target and all its associated logs?')) {
+        const hostToDelete = await db.hosts.get(id);
+        if (hostToDelete) {
+          await db.logs.where({
+            type: 'sent',
+            host: hostToDelete.host,
+            port: hostToDelete.port
+          }).delete();
+        }
+        await db.hosts.delete(id);
+      }
+    }
   };
 
   const startEditHost = (host: Host) => {
@@ -88,7 +100,18 @@ export function Sidebar({ selectedHost, selectedListener, onSelectHost, onSelect
   };
 
   const deleteListener = async (id?: number) => {
-    if (id) await db.listeners.delete(id);
+    if (id) {
+      if (confirm('Are you sure you want to delete this listener and all its associated logs?')) {
+        const listenerToDelete = await db.listeners.get(id);
+        if (listenerToDelete) {
+          await db.logs.where({
+            type: 'received',
+            port: listenerToDelete.port
+          }).delete();
+        }
+        await db.listeners.delete(id);
+      }
+    }
   };
 
   const startEditListener = (listener: Listener) => {

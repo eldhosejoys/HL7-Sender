@@ -5,6 +5,7 @@ export interface Host {
   name: string;
   host: string;
   port: number;
+  lastMessage?: string;
 }
 
 export interface Listener {
@@ -38,10 +39,10 @@ const db = new Dexie('HL7SenderDB') as Dexie & {
 };
 
 // Auto-upgrade database schema by just incrementing the version
-db.version(2).stores({
+db.version(3).stores({
   hosts: '++id, name, host, port',
   listeners: '++id, name, port',
-  logs: '++id, type, timestamp, port',
+  logs: '++id, type, timestamp, host, port',
   savedMessages: '++id, name, timestamp'
 });
 

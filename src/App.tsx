@@ -13,7 +13,7 @@ function App() {
   const [selectedListener, setSelectedListener] = useState<{ port: number, name: string } | null>(null);
   const [activeListeners, setActiveListeners] = useState<number[]>([]);
   const [isSending, setIsSending] = useState(false);
-  const [copiedMessage, setCopiedMessage] = useState('');
+  const [editorMessage, setEditorMessage] = useState('');
   const [isLogsExpanded, setIsLogsExpanded] = useState(false);
 
   // Setup sockets
@@ -47,6 +47,16 @@ function App() {
       socket.off('hl7_received');
     };
   }, []);
+
+  // Auto-save editor message to the selected host
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (selectedHost?.id) {
+        await db.hosts.update(selectedHost.id, { lastMessage: editorMessage });
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [editorMessage, selectedHost?.id]);
 
   const handleSend = async (message: string) => {
     if (!selectedHost) return;
@@ -118,11 +128,18 @@ function App() {
       <Sidebar 
         selectedHost={selectedHost}
         selectedListener={selectedListener}
-        onSelectHost={(host) => {
+        onSelectHost={async (host) => {
+          if (selectedHost?.id) {
+            await db.hosts.update(selectedHost.id, { lastMessage: editorMessage });
+          }
           setSelectedHost(host);
+          setEditorMessage(host.lastMessage || '');
           setSelectedListener(null);
         }} 
-        onSelectListener={(listener) => {
+        onSelectListener={async (listener) => {
+          if (selectedHost?.id) {
+            await db.hosts.update(selectedHost.id, { lastMessage: editorMessage });
+          }
           setSelectedListener({ port: listener.port, name: listener.name });
           setSelectedHost(null);
         }}
@@ -167,12 +184,13 @@ function App() {
             <Editor 
               onSend={handleSend} 
               isSending={isSending} 
-              initialMessage={copiedMessage}
+              message={editorMessage}
+              onMessageChange={setEditorMessage}
               hostSelected={!!selectedHost}
             />
           )}
           <LogViewer 
-            onCopyMessage={(msg) => setCopiedMessage(msg)} 
+            onCopyMessage={(msg) => setEditorMessage(msg)} 
             isExpanded={isLogsExpanded || !!selectedListener}
             onToggleExpand={selectedListener ? undefined : () => setIsLogsExpanded(!isLogsExpanded)}
             selectedHost={selectedHost}

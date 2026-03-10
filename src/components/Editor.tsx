@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import db from '../db';
 import { Send, Copy, Trash, Braces, Save, FolderOpen, X } from 'lucide-react';
@@ -6,23 +6,17 @@ import { Send, Copy, Trash, Braces, Save, FolderOpen, X } from 'lucide-react';
 interface EditorProps {
   onSend: (message: string) => void;
   isSending: boolean;
-  initialMessage?: string;
+  message: string;
+  onMessageChange: (msg: string) => void;
   hostSelected: boolean;
 }
 
-export function Editor({ onSend, isSending, initialMessage = '', hostSelected }: EditorProps) {
-  const [message, setMessage] = useState(initialMessage);
+export function Editor({ onSend, isSending, message, onMessageChange, hostSelected }: EditorProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [saveName, setSaveName] = useState('');
   const [showLoadMenu, setShowLoadMenu] = useState(false);
 
   const savedMessages = useLiveQuery(() => db.savedMessages.orderBy('timestamp').reverse().toArray());
-
-  useEffect(() => {
-    if (initialMessage) {
-      setMessage(initialMessage);
-    }
-  }, [initialMessage]);
 
   const handleCopy = async () => {
     try {
@@ -33,7 +27,7 @@ export function Editor({ onSend, isSending, initialMessage = '', hostSelected }:
   };
 
   const handleClear = () => {
-    setMessage('');
+    onMessageChange('');
   };
 
   const handleSaveMessage = async () => {
@@ -48,7 +42,7 @@ export function Editor({ onSend, isSending, initialMessage = '', hostSelected }:
   };
   
   const handleLoadMessage = (content: string) => {
-    setMessage(content);
+    onMessageChange(content);
     setShowLoadMenu(false);
   };
 
@@ -136,7 +130,7 @@ export function Editor({ onSend, isSending, initialMessage = '', hostSelected }:
           className="w-full min-h-[300px] md:h-full p-4 resize-none outline-none font-mono text-sm text-gray-800 whitespace-pre scrollbar-thin scrollbar-thumb-gray-300 relative z-0"
           placeholder="Paste your raw HL7 message here...&#10;MSH|^~\&|SENDING_APP|SENDING_FAC|REC_APP|REC_FAC|20230101120000||ADT^A01|MSG00001|P|2.3&#10;EVN|A01|20230101120000&#10;..."
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e) => onMessageChange(e.target.value)}
           spellCheck={false}
         />
       </div>
