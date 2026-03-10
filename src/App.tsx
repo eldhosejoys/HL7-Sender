@@ -10,9 +10,11 @@ const socket = io(window.location.hostname === 'localhost' ? 'http://localhost:3
 
 function App() {
   const [selectedHost, setSelectedHost] = useState<Host | null>(null);
+  const [selectedListener, setSelectedListener] = useState<{ port: number, name: string } | null>(null);
   const [activeListeners, setActiveListeners] = useState<number[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [copiedMessage, setCopiedMessage] = useState('');
+  const [isLogsExpanded, setIsLogsExpanded] = useState(false);
 
   // Setup sockets
   useEffect(() => {
@@ -114,7 +116,16 @@ function App() {
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50 text-gray-900 font-sans">
       <Sidebar 
-        onSelectHost={setSelectedHost} 
+        selectedHost={selectedHost}
+        selectedListener={selectedListener}
+        onSelectHost={(host) => {
+          setSelectedHost(host);
+          setSelectedListener(null);
+        }} 
+        onSelectListener={(listener) => {
+          setSelectedListener({ port: listener.port, name: listener.name });
+          setSelectedHost(null);
+        }}
         activeListeners={activeListeners}
         onStartListener={startListener}
         onStopListener={stopListener}
@@ -136,16 +147,35 @@ function App() {
           ) : (
             <div className="text-sm text-gray-500 italic">No Target Selected</div>
           )}
+          
+          {selectedListener ? (
+            <div className="flex items-center gap-2 text-sm text-gray-600 ml-4 border-l border-gray-200 pl-4">
+              <span className={`w-2 h-2 rounded-full ${activeListeners.includes(selectedListener.port) ? 'bg-green-500' : 'bg-gray-400'}`}></span>
+              Selected Listener: 
+              <span className="font-semibold text-gray-800">{selectedListener.name}</span> 
+              (Port: {selectedListener.port})
+            </div>
+          ) : (
+            <div className="text-sm text-gray-500 italic ml-4 border-l border-gray-200 pl-4">No Listener Selected</div>
+          )}
         </header>
         
-        <main className="flex-1 p-4 grid grid-rows-2 gap-4 overflow-hidden">
-          <Editor 
-            onSend={handleSend} 
-            isSending={isSending} 
-            initialMessage={copiedMessage}
-            hostSelected={!!selectedHost}
+        <main className={`flex-1 p-4 ${isLogsExpanded || selectedListener ? 'flex flex-col' : 'grid grid-rows-2'} gap-4 overflow-hidden`}>
+          {(!isLogsExpanded && !selectedListener) && (
+            <Editor 
+              onSend={handleSend} 
+              isSending={isSending} 
+              initialMessage={copiedMessage}
+              hostSelected={!!selectedHost}
+            />
+          )}
+          <LogViewer 
+            onCopyMessage={(msg) => setCopiedMessage(msg)} 
+            isExpanded={isLogsExpanded || !!selectedListener}
+            onToggleExpand={selectedListener ? undefined : () => setIsLogsExpanded(!isLogsExpanded)}
+            selectedHost={selectedHost}
+            selectedListener={selectedListener}
           />
-          <LogViewer onCopyMessage={(msg) => setCopiedMessage(msg)} />
         </main>
       </div>
     </div>

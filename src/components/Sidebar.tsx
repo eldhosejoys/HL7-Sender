@@ -4,13 +4,16 @@ import db, { type Host, type Listener } from '../db';
 import { Plus, Trash2, Server, Radio, Play, Square, Edit2, X, Check } from 'lucide-react';
 
 interface SidebarProps {
+  selectedHost?: Host | null;
+  selectedListener?: { port: number, name: string } | null;
   onSelectHost: (host: Host) => void;
+  onSelectListener: (listener: Listener) => void;
   activeListeners: number[];
   onStartListener: (port: number) => void;
   onStopListener: (port: number) => void;
 }
 
-export function Sidebar({ onSelectHost, activeListeners, onStartListener, onStopListener }: SidebarProps) {
+export function Sidebar({ selectedHost, selectedListener, onSelectHost, onSelectListener, activeListeners, onStartListener, onStopListener }: SidebarProps) {
   const hosts = useLiveQuery(() => db.hosts.toArray());
   const listeners = useLiveQuery(() => db.listeners.toArray());
 
@@ -133,7 +136,7 @@ export function Sidebar({ onSelectHost, activeListeners, onStartListener, onStop
         </form>
         <ul className="space-y-2">
           {hosts?.map((host) => (
-            <li key={host.id} className="flex flex-col p-2 rounded-md hover:bg-gray-50 border border-transparent hover:border-gray-200 cursor-pointer group" onClick={() => editingHostId !== host.id && onSelectHost(host)}>
+            <li key={host.id} className={`flex flex-col p-2 rounded-md border cursor-pointer group ${selectedHost?.id === host.id ? 'bg-primary-50 border-primary-200 ring-1 ring-primary-500' : 'hover:bg-gray-50 border-transparent hover:border-gray-200'}`} onClick={() => editingHostId !== host.id && onSelectHost(host)}>
               {editingHostId === host.id ? (
                 <div className="flex flex-col gap-2" onClick={e => e.stopPropagation()}>
                   <input type="text" value={editHostName} onChange={e => setEditHostName(e.target.value)} className="w-full text-sm px-2 py-1 border border-gray-300 rounded-md" placeholder="Name" required />
@@ -184,7 +187,7 @@ export function Sidebar({ onSelectHost, activeListeners, onStartListener, onStop
           {listeners?.map((listener) => {
             const isActive = activeListeners.includes(listener.port);
             return (
-              <li key={listener.id} className="flex flex-col p-2 rounded-md bg-gray-50 border border-gray-200 group">
+              <li key={listener.id} className={`flex flex-col p-2 rounded-md border cursor-pointer group ${selectedListener?.port === listener.port ? 'bg-green-50 border-green-200 ring-1 ring-green-500' : 'hover:bg-gray-50 border-transparent hover:border-gray-200'}`} onClick={() => editingListenerId !== listener.id && onSelectListener(listener)}>
                 {editingListenerId === listener.id ? (
                    <div className="flex flex-col gap-2">
                      <input type="text" value={editListenerName} onChange={e => setEditListenerName(e.target.value)} className="w-full text-sm px-2 py-1 border border-gray-300 rounded-md" placeholder="Name" required />
