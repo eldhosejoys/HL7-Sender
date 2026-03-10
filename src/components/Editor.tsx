@@ -58,9 +58,9 @@ export function Editor({ onSend, isSending, initialMessage = '', hostSelected }:
   };
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-lg shadow-sm border border-gray-200">
-      <div className="flex items-center justify-between p-3 border-b border-gray-200 bg-gray-50/50">
-        <h3 className="font-semibold text-gray-700 flex items-center gap-2 text-sm">
+    <div className="flex flex-col h-auto md:h-full bg-white rounded-lg shadow-sm border border-gray-200 md:overflow-hidden">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 border-b border-gray-200 bg-gray-50/50 gap-3 sm:gap-0">
+        <h3 className="font-semibold text-gray-700 flex items-center gap-2 text-sm whitespace-nowrap">
           <Braces size={16} className="text-primary-600" />
           HL7 Message Editor
         </h3>
@@ -79,7 +79,7 @@ export function Editor({ onSend, isSending, initialMessage = '', hostSelected }:
             <button onClick={() => setIsSaving(false)} className="text-xs text-gray-500 hover:text-gray-700 px-1"><X size={16} /></button>
           </div>
         ) : (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto">
             <div className="relative">
               <button onClick={() => setShowLoadMenu(!showLoadMenu)} className="flex items-center gap-1 text-gray-600 hover:text-primary-600 text-xs font-medium px-2 py-1.5 rounded-md hover:bg-primary-50 transition-colors" title="Load Template">
                 <FolderOpen size={14} /> Load
@@ -133,7 +133,7 @@ export function Editor({ onSend, isSending, initialMessage = '', hostSelected }:
       <div className="flex-1 p-0 relative">
         {showLoadMenu && <div className="absolute inset-0 z-10" onClick={() => setShowLoadMenu(false)}></div>}
         <textarea
-          className="w-full h-full p-4 resize-none outline-none font-mono text-sm text-gray-800 whitespace-pre scrollbar-thin scrollbar-thumb-gray-300 relative z-0"
+          className="w-full min-h-[300px] md:h-full p-4 resize-none outline-none font-mono text-sm text-gray-800 whitespace-pre scrollbar-thin scrollbar-thumb-gray-300 relative z-0"
           placeholder="Paste your raw HL7 message here...&#10;MSH|^~\&|SENDING_APP|SENDING_FAC|REC_APP|REC_FAC|20230101120000||ADT^A01|MSG00001|P|2.3&#10;EVN|A01|20230101120000&#10;..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}

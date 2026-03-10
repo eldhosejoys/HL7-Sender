@@ -114,7 +114,7 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50 text-gray-900 font-sans">
+    <div className="flex flex-col md:flex-row min-h-screen md:h-screen md:overflow-hidden bg-gray-50 text-gray-900 font-sans">
       <Sidebar 
         selectedHost={selectedHost}
         selectedListener={selectedListener}
@@ -131,36 +131,38 @@ function App() {
         onStopListener={stopListener}
       />
       
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-14 bg-white border-b border-gray-200 flex items-center px-6 justify-between shrink-0 shadow-sm z-10">
+      <div className="flex-1 h-auto flex flex-col min-w-0">
+        <header className="min-h-[3.5rem] py-3 md:py-0 bg-white border-b border-gray-200 flex flex-col md:flex-row items-start md:items-center px-4 md:px-6 justify-between shrink-0 shadow-sm z-10 gap-2 md:gap-0">
           <div className="flex items-center gap-2 text-primary-600 font-semibold text-lg">
             <Activity size={24} />
             HL7 Studio Platform
           </div>
-          {selectedHost ? (
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <span className="w-2 h-2 rounded-full bg-green-500"></span>
-              Selected Target: 
-              <span className="font-semibold text-gray-800">{selectedHost.name}</span> 
-              ({selectedHost.host}:{selectedHost.port})
-            </div>
-          ) : (
-            <div className="text-sm text-gray-500 italic">No Target Selected</div>
-          )}
-          
-          {selectedListener ? (
-            <div className="flex items-center gap-2 text-sm text-gray-600 ml-4 border-l border-gray-200 pl-4">
-              <span className={`w-2 h-2 rounded-full ${activeListeners.includes(selectedListener.port) ? 'bg-green-500' : 'bg-gray-400'}`}></span>
-              Selected Listener: 
-              <span className="font-semibold text-gray-800">{selectedListener.name}</span> 
-              (Port: {selectedListener.port})
-            </div>
-          ) : (
-            <div className="text-sm text-gray-500 italic ml-4 border-l border-gray-200 pl-4">No Listener Selected</div>
-          )}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center w-full md:w-auto gap-1 sm:gap-0">
+            {selectedHost ? (
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                Selected Target: 
+                <span className="font-semibold text-gray-800">{selectedHost.name}</span> 
+                ({selectedHost.host}:{selectedHost.port})
+              </div>
+            ) : (
+              <div className="text-sm text-gray-500 italic hidden md:block">No Target Selected</div>
+            )}
+            
+            {selectedListener ? (
+              <div className="flex items-center gap-2 text-sm text-gray-600 sm:ml-4 sm:border-l border-gray-200 sm:pl-4">
+                <span className={`w-2 h-2 rounded-full ${activeListeners.includes(selectedListener.port) ? 'bg-green-500' : 'bg-gray-400'}`}></span>
+                Selected Listener: 
+                <span className="font-semibold text-gray-800">{selectedListener.name}</span> 
+                (Port: {selectedListener.port})
+              </div>
+            ) : (
+              <div className="text-sm text-gray-500 italic sm:ml-4 sm:border-l border-gray-200 sm:pl-4 hidden md:block">No Listener Selected</div>
+            )}
+          </div>
         </header>
         
-        <main className={`flex-1 p-4 ${isLogsExpanded || selectedListener ? 'flex flex-col' : 'grid grid-rows-2'} gap-4 overflow-hidden`}>
+        <main className={`h-auto p-2 md:p-4 ${isLogsExpanded || selectedListener ? 'flex flex-col' : 'flex flex-col lg:grid lg:grid-rows-2'} gap-2 md:gap-4 md:overflow-hidden`}>
           {(!isLogsExpanded && !selectedListener) && (
             <Editor 
               onSend={handleSend} 

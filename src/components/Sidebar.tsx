@@ -16,6 +16,7 @@ interface SidebarProps {
 export function Sidebar({ selectedHost, selectedListener, onSelectHost, onSelectListener, activeListeners, onStartListener, onStopListener }: SidebarProps) {
   const hosts = useLiveQuery(() => db.hosts.toArray());
   const listeners = useLiveQuery(() => db.listeners.toArray());
+  const [activeTab, setActiveTab] = useState<'send' | 'receive'>('send');
 
   // Host state
   const [newHostName, setNewHostName] = useState('');
@@ -117,9 +118,27 @@ export function Sidebar({ selectedHost, selectedListener, onSelectHost, onSelect
   };
 
   return (
-    <div className="w-80 h-full bg-white border-r border-gray-200 flex flex-col overflow-y-auto">
+    <div className="w-full md:w-80 h-auto md:h-full bg-white border-b md:border-b-0 md:border-r border-gray-200 flex flex-col md:overflow-y-auto shrink-0">
+      {/* Mobile Tab Switcher */}
+      <div className="flex md:hidden border-b border-gray-200 sticky top-0 bg-white z-10">
+        <button 
+          onClick={() => setActiveTab('send')}
+          className={`flex-1 py-3 text-sm font-semibold flex items-center justify-center gap-2 transition-all ${activeTab === 'send' ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50/30' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+        >
+          <Server size={16} />
+          Targets
+        </button>
+        <button 
+          onClick={() => setActiveTab('receive')}
+          className={`flex-1 py-3 text-sm font-semibold flex items-center justify-center gap-2 transition-all ${activeTab === 'receive' ? 'text-green-600 border-b-2 border-green-600 bg-green-50/30' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+        >
+          <Radio size={16} />
+          Listeners
+        </button>
+      </div>
+
       {/* Senders Section */}
-      <div className="p-4 border-b border-gray-200">
+      <div className={`${activeTab === 'send' ? 'block' : 'hidden'} md:block p-4 border-b border-gray-200`}>
         <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-4">
           <Server size={20} className="text-primary-600" />
           Saved Targets (Send)
@@ -171,7 +190,7 @@ export function Sidebar({ selectedHost, selectedListener, onSelectHost, onSelect
       </div>
 
       {/* Listeners Section */}
-      <div className="p-4 border-b border-gray-200">
+      <div className={`${activeTab === 'receive' ? 'block' : 'hidden'} md:block p-4 border-b border-gray-200`}>
         <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-4">
           <Radio size={20} className="text-green-600" />
           Local Listeners (Receive)

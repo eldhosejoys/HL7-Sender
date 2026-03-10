@@ -56,10 +56,10 @@ export function LogViewer({ onCopyMessage, isExpanded, onToggleExpand, selectedH
   const logs = allLogs?.filter(log => (selectedHost || selectedListener) ? true : (filter === 'all' || log.type === filter)) || [];
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-lg shadow-sm border border-gray-200">
-      <div className="flex items-center justify-between p-3 border-b border-gray-200 bg-gray-50/50">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-4">
+    <div className="flex flex-col h-auto md:h-full bg-white rounded-lg shadow-sm border border-gray-200 md:overflow-hidden">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 border-b border-gray-200 bg-gray-50/50 gap-3 sm:gap-0">
+        <div className="flex flex-col gap-2 w-full sm:w-auto">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
             <h3 className="font-semibold text-gray-700 flex items-center gap-2 text-sm">
               <FileText size={16} className="text-gray-500" />
               Message Logs
@@ -92,7 +92,7 @@ export function LogViewer({ onCopyMessage, isExpanded, onToggleExpand, selectedH
             )}
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-start sm:justify-end">
           {onToggleExpand && (
             <button onClick={onToggleExpand} className="text-sm flex items-center gap-1 text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200 px-2 py-1.5 rounded-md transition-colors">
               {isExpanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
@@ -104,7 +104,7 @@ export function LogViewer({ onCopyMessage, isExpanded, onToggleExpand, selectedH
           </button>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="md:flex-1 md:overflow-y-auto p-4 space-y-4">
         {logs?.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-gray-400">
             <p className="text-sm">No logs available</p>
@@ -129,7 +129,7 @@ export function LogViewer({ onCopyMessage, isExpanded, onToggleExpand, selectedH
                   Load in Editor
                 </button>
               </div>
-              <div className="p-3 grid grid-cols-2 gap-4">
+              <div className="p-3 grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
                   <h4 className="text-xs font-semibold text-gray-500 mb-1">Message</h4>
                   <pre className="text-xs font-mono text-gray-800 bg-white border border-gray-200 p-2 rounded max-h-40 overflow-y-auto whitespace-pre-wrap">
@@ -138,7 +138,7 @@ export function LogViewer({ onCopyMessage, isExpanded, onToggleExpand, selectedH
                 </div>
                 <div>
                   <h4 className="text-xs font-semibold text-gray-500 mb-1">{log.type === 'sent' ? 'Received ACK' : 'Auto-Sent ACK'}</h4>
-                  <pre className="text-xs font-mono text-gray-800 bg-white border border-gray-200 p-2 rounded max-h-40 overflow-y-auto whitespace-pre-wrap">
+                  <pre className="text-xs font-mono text-gray-800 bg-white border border-gray-200 p-2 rounded max-h-40 overflow-y-auto whitespace-pre-wrap break-all">
                     {log.ack ? log.ack.replace(/\r/g, '\n') : 'No ACK received'}
                   </pre>
                 </div>
